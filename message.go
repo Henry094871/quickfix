@@ -81,6 +81,10 @@ func (b *Body) Init() {
 	b.init()
 }
 
+func (b *Body) InitWithCustomOrdering(customOrder []int) {
+	b.initWithCustomOrdering(customOrder)
+}
+
 // Trailer is the last section of a FIX message.
 type Trailer struct{ FieldMap }
 
@@ -134,6 +138,15 @@ func NewMessage() *Message {
 	m := new(Message)
 	m.Header.Init()
 	m.Body.Init()
+	m.Trailer.Init()
+
+	return m
+}
+
+func NewMessageWithCustomOrderingBody(customOrder []int) *Message {
+	m := new(Message)
+	m.Header.Init()
+	m.Body.initWithCustomOrdering(customOrder)
 	m.Trailer.Init()
 
 	return m

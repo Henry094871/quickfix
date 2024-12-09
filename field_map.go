@@ -71,6 +71,27 @@ func (m *FieldMap) initWithOrdering(ordering tagOrder) {
 	m.compare = ordering
 }
 
+func (m *FieldMap) initWithCustomOrdering(customOrder []int) {
+	m.rwLock = &sync.RWMutex{}
+	m.tagLookup = make(map[Tag]field)
+	ordering := func(i, j Tag) bool {
+		iIndex := getIndex(customOrder, int(i))
+		jIndex := getIndex(customOrder, int(j))
+		return iIndex < jIndex
+	}
+	m.compare = ordering
+}
+
+// getIndex 返回字段在 customOrder 中的索引位置
+func getIndex(order []int, tag int) int {
+	for i, val := range order {
+		if val == tag {
+			return i
+		}
+	}
+	return len(order) // 不存在的字段放在最后
+}
+
 // Tags returns all of the Field Tags in this FieldMap.
 func (m FieldMap) Tags() []Tag {
 	m.rwLock.RLock()
